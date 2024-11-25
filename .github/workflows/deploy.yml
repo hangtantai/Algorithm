@@ -21,5 +21,6 @@ jobs:
         password: ${{ secrets.DOCKER_HUB_PASSWORD }}
     - name: Build and push backend image
       run: |
-        docker build -t my-backend:latest -f Dockerfile .
+        docker build -t my-backend:latest -f Dockerfile . 
+        docker tag my-backend:latest htt31124/my-backend:latest 
         docker push htt31124/my-backend:latest
