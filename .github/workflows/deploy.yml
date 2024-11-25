@@ -22,4 +22,4 @@ jobs:
     - name: Build and push backend image
       run: |
         docker build -t my-backend:latest -f Dockerfile .
-        docker push my-backend:latest
+        docker push htt31124/my-backend:latest
