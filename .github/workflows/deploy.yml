@@ -24,15 +24,20 @@ jobs:
       run: |
         docker save my-backend:latest -o my-backend.tar
 
+    - name: Add SSH key
+      run: |
+        echo "${{ secrets.VM_SSH_KEY }}" > /tmp/vm_ssh_key
+        chmod 600 /tmp/vm_ssh_key
+
     - name: Copy Docker image to VM
       uses: appleboy/scp-action@v0.1.1
       with:
         host: ${{ secrets.VM_HOST }}
         username: ${{ secrets.VM_USERNAME }}
-        key:  ${{ secrets.VM_SSH_KEY }}
+        key: /tmp/vm_ssh_key
         source: "my-backend.tar"
         target: "/home/azureuser/docker-images/my-backend.tar"
 
     - name: Load Docker image on VM
       run: |
-        ssh -i  ${{ secrets.VM_SSH_KEY }} ${{ secrets.VM_USERNAME }}@${{ secrets.VM_HOST }} 'docker load -i /home/azureuser/docker-images/my-backend.tar'
+        ssh -i /tmp/vm_ssh_key ${{ secrets.VM_USERNAME }}@${{ secrets.VM_HOST }} 'docker load -i /home/azureuser/docker-images/my-backend.tar'
