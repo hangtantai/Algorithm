@@ -29,10 +29,10 @@ jobs:
       with:
         host: ${{ secrets.VM_HOST }}
         username: ${{ secrets.VM_USERNAME }}
-        key: ${{ secrets.VM_SSH_KEY }}
+        key: ~/.ssh/dizim-hcmus-azure-rsa.pem
         source: "my-backend.tar"
         target: "/home/azureuser/docker-images/my-backend.tar"
 
     - name: Load Docker image on VM
       run: |
-        ssh -i ${{ secrets.VM_SSH_KEY }} ${{ secrets.VM_USERNAME }}@${{ secrets.VM_HOST }} 'docker load -i /home/azureuser/docker-images/my-backend.tar'
+        ssh -i ~/.ssh/dizim-hcmus-azure-rsa.pem ${{ secrets.VM_USERNAME }}@${{ secrets.VM_HOST }} 'docker load -i /home/azureuser/docker-images/my-backend.tar'
