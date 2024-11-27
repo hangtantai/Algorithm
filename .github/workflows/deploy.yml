@@ -23,13 +23,14 @@ jobs:
     - name: Save Docker image to a tar file
       run: |
         docker save my-backend:latest -o my-backend.tar
-
+    
     - name: Copy Docker image to VM
-      uses: appleboy/ssh-action@master
+      uses: appleboy/scp-action@v0.1.1
       with:
         host: ${{ secrets.VM_HOST }}
         username: ${{ secrets.VM_USERNAME }}
         key: ${{ secrets.VM_SSH_KEY }}
-        script: |
-          sudo mkdir -p ${{ secrets.VM_USERNAME }}/test
-          scp my-backend.tar ${{ secrets.VM_USERNAME }}/test/my-backend.tar
+        source: my-backend.tar
+        target: /home/${{ secrets.VM_USERNAME }}/my-backend.tar
+
+
