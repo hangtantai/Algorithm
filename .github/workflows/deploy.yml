@@ -31,8 +31,8 @@ jobs:
         username: ${{ secrets.VM_USERNAME }}
         key: ${{ secrets.VM_SSH_KEY }}
         script: |
-          scp -i ${{ secrets.VM_SSH_KEY }} -o StrictHostKeyChecking=no my-backend.tar ${{ secrets.VM_USERNAME }}@${{ secrets.VM_HOST }}:${{ secrets.VM_USERNAME }}/my-backend.tar
-          ssh -i ${{ secrets.VM_SSH_KEY }} -o StrictHostKeyChecking=no ${{ secrets.VM_USERNAME }}@${{ secrets.VM_HOST }} "
+          scp -o StrictHostKeyChecking=no my-backend.tar ${{ secrets.VM_USERNAME }}@${{ secrets.VM_HOST }}:${{ secrets.VM_USERNAME }}/my-backend.tar
+          ssh -o StrictHostKeyChecking=no ${{ secrets.VM_USERNAME }}@${{ secrets.VM_HOST }} "
             docker load -i /home/${{ secrets.VM_USERNAME }}/my-backend.tar &&
             rm /home/${{ secrets.VM_USERNAME }}/my-backend.tar &&
             docker run -d --name my-backend-container -p 80:80 my-backend:latest"
