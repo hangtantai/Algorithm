@@ -47,6 +47,8 @@ jobs:
             sudo apt-get install -y docker.io
             sudo systemctl start docker
             sudo systemctl enable docker
+            sudo usermod -aG docker ${{ secrets.VM_USERNAME }}
+            newgrp docker
           fi
           docker load -i /home/${{ secrets.VM_USERNAME }}/my-backend.tar &&
           rm /home/${{ secrets.VM_USERNAME }}/my-backend.tar &&
