@@ -32,4 +32,4 @@ jobs:
         key: ${{ secrets.VM_SSH_KEY }}
         script: |
           sudo mkdir -p ${{ secrets.VM_USERNAME }}/test
-          scp my-backend.tar:${{ secrets.VM_USERNAME }}/test/my-backend.tar
+          scp my-backend.tar ${{ secrets.VM_USERNAME }}/test/my-backend.tar
