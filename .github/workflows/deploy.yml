@@ -16,13 +16,13 @@ jobs:
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2
 
-    # - name: Build Docker image
-    #   run: |
-    #     docker build -t my-backend:latest -f Dockerfile .
+    - name: Build Docker image
+      run: |
+        docker build -t my-backend:latest -f Dockerfile .
 
-    # - name: Save Docker image to a tar file
-    #   run: |
-    #     docker save my-backend:latest -o my-backend.tar
+    - name: Save Docker image to a tar file
+      run: |
+        docker save my-backend:latest -o my-backend.tar
 
     - name: Copy Docker image to VM
       uses: appleboy/ssh-action@master
@@ -30,4 +30,6 @@ jobs:
         host: ${{ secrets.VM_HOST }}
         username: ${{ secrets.VM_USERNAME }}
         key: ${{ secrets.VM_SSH_KEY }}
-        script: sudo mkdir -p home/${{ secrets.VM_USERNAME }}/test
+        script: |
+          sudo mkdir -p ${{ secrets.VM_USERNAME }}/test
+          scp my-backend.tar:${{ secrets.VM_USERNAME }}/test/my-backend.tar
