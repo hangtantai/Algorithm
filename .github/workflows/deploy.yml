@@ -24,17 +24,14 @@ jobs:
       run: |
         docker save my-backend:latest -o my-backend.tar
 
+    - name: Create SSH key file
+      run: |
+        echo "${{ secrets.VM_SSH_KEY }}" > /tmp/vm_ssh_key.pem
+        chmod 600 /tmp/vm_ssh_key.pem
+
     - name: Copy Docker image to VM
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.VM_HOST }}
-        username: ${{ secrets.VM_USERNAME }}
-        key: ${{ secrets.VM_SSH_KEY }}
-        script: |
-          echo "${{ secrets.VM_SSH_KEY }}" > /tmp/vm_ssh_key.pem
-          chmod 600 /tmp/vm_ssh_key.pem
-          scp -i /tmp/vm_ssh_key.pem -o StrictHostKeyChecking=no ./my-backend.tar ${{ secrets.VM_USERNAME }}@${{ secrets.VM_HOST }}:/home/${{ secrets.VM_USERNAME }}/my-backend.tar
-          rm /tmp/vm_ssh_key.pem
+      run: |
+        scp -i /tmp/vm_ssh_key.pem -o StrictHostKeyChecking=no my-backend.tar ${{ secrets.VM_USERNAME }}@${{ secrets.VM_HOST }}:/home/${{ secrets.VM_USERNAME }}/my-backend.tar
 
     - name: Load Docker image and run container on VM
       uses: appleboy/ssh-action@master
@@ -54,3 +51,7 @@ jobs:
           docker load -i /home/${{ secrets.VM_USERNAME }}/my-backend.tar &&
           rm /home/${{ secrets.VM_USERNAME }}/my-backend.tar &&
           docker run -d --name my-backend-container -p 80:80 my-backend:latest
+
+    - name: Clean up SSH key file
+      run: |
+        rm /tmp/vm_ssh_key.pem
