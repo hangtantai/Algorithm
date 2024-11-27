@@ -33,9 +33,18 @@ jobs:
         script: |
           echo "${{ secrets.VM_SSH_KEY }}" > /tmp/vm_ssh_key.pem
           chmod 600 /tmp/vm_ssh_key.pem
-          scp -i /tmp/vm_ssh_key.pem -o StrictHostKeyChecking=no my-backend.tar ${{ secrets.VM_USERNAME }}@${{ secrets.VM_HOST }}:${{ secrets.VM_USERNAME }}/my-backend.tar
+          scp -i /tmp/vm_ssh_key.pem -o StrictHostKeyChecking=no my-backend.tar ${{ secrets.VM_USERNAME }}@${{ secrets.VM_HOST }}:/home/${{ secrets.VM_USERNAME }}/my-backend.tar
           ssh -i /tmp/vm_ssh_key.pem -o StrictHostKeyChecking=no ${{ secrets.VM_USERNAME }}@${{ secrets.VM_HOST }} "
+            if ! command -v docker &> /dev/null
+            then
+              echo 'Docker not found. Installing Docker...'
+              sudo apt-get update
+              sudo apt-get install -y docker.io
+              sudo systemctl start docker
+              sudo systemctl enable docker
+            fi
             docker load -i /home/${{ secrets.VM_USERNAME }}/my-backend.tar &&
             rm /home/${{ secrets.VM_USERNAME }}/my-backend.tar &&
-            docker run -d --name my-backend-container -p 80:80 my-backend:latest"
+            docker run -d --name my-backend-container -p 80:80 my-backend:latest
+          "
           rm /tmp/vm_ssh_key.pem
