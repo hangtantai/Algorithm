@@ -33,7 +33,7 @@ jobs:
         script: |
           echo "${{ secrets.VM_SSH_KEY }}" > /tmp/vm_ssh_key.pem
           chmod 600 /tmp/vm_ssh_key.pem
-          scp -i /tmp/vm_ssh_key.pem -o StrictHostKeyChecking=no my-backend.tar ${{ secrets.VM_USERNAME }}@${{ secrets.VM_HOST }}:/home/${{ secrets.VM_USERNAME }}/my-backend.tar
+          scp -i /tmp/vm_ssh_key.pem -o StrictHostKeyChecking=no ./my-backend.tar ${{ secrets.VM_USERNAME }}@${{ secrets.VM_HOST }}:/home/${{ secrets.VM_USERNAME }}/my-backend.tar
           rm /tmp/vm_ssh_key.pem
 
     - name: Load Docker image and run container on VM
