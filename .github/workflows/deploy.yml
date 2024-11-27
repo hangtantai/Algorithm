@@ -48,11 +48,10 @@ jobs:
             sudo systemctl start docker
             sudo systemctl enable docker
             sudo usermod -aG docker ${{ secrets.VM_USERNAME }}
-            newgrp docker
           fi
-          docker load -i /home/${{ secrets.VM_USERNAME }}/my-backend.tar &&
-          rm /home/${{ secrets.VM_USERNAME }}/my-backend.tar &&
-          docker run -d --name my-backend-container -p 80:80 my-backend:latest
+          sudo docker load -i /home/${{ secrets.VM_USERNAME }}/my-backend.tar &&
+          sudo rm /home/${{ secrets.VM_USERNAME }}/my-backend.tar &&
+          sudo docker run -d --name my-backend-container -p 80:80 my-backend:latest
 
     - name: Clean up SSH key file
       run: |
