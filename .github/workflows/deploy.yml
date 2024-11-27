@@ -24,13 +24,15 @@ jobs:
       run: |
         docker save my-backend:latest -o my-backend.tar
     
-    - name: Copy Docker image to VM
-      uses: appleboy/scp-action@v0.1.1
+    - name: Copy Docker image to VM and load it
+      uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.VM_HOST }}
         username: ${{ secrets.VM_USERNAME }}
         key: ${{ secrets.VM_SSH_KEY }}
-        source: my-backend.tar
-        target: /home/${{ secrets.VM_USERNAME }}/my-backend.tar
-
-
+        script: |
+          scp -i ${{ secrets.VM_SSH_KEY }} -o StrictHostKeyChecking=no my-backend.tar ${{ secrets.VM_USERNAME }}@${{ secrets.VM_HOST }}:${{ secrets.VM_USERNAME }}/my-backend.tar
+          ssh -i ${{ secrets.VM_SSH_KEY }} -o StrictHostKeyChecking=no ${{ secrets.VM_USERNAME }}@${{ secrets.VM_HOST }} "
+            docker load -i /home/${{ secrets.VM_USERNAME }}/my-backend.tar &&
+            rm /home/${{ secrets.VM_USERNAME }}/my-backend.tar &&
+            docker run -d --name my-backend-container -p 80:80 my-backend:latest"
