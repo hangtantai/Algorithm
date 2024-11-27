@@ -26,9 +26,12 @@ jobs:
 
     - name: Add SSH key
       run: |
-        echo ${{ secrets.VM_SSH_KEY }} > /tmp/vm_ssh_key
-        echo  > /tmp/vm_ssh_key
+        echo "${{ secrets.VM_SSH_KEY }}" > /tmp/vm_ssh_key
         chmod 600 /tmp/vm_ssh_key
+        
+    - name: Print SSH key
+      run: |
+        cat /tmp/vm_ssh_key
 
     - name: Copy Docker image to VM
       uses: appleboy/scp-action@v0.1.1
